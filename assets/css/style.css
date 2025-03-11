@@ -1,0 +1,686 @@
+@font-face {
+    font-family: 'StarWars';
+    src: 
+        url('/fonts/StarJedi.woff2') format('woff2'),
+        url('/fonts/StarJedi.woff') format('woff'),   
+        url('/fonts/StarJedi.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+}  
+  body {
+    height: 100vh;
+    width: 100vw;
+    display: block;
+    font-family: 'StarWars', sans-serif !important;
+    background: url('~/assets/fondo.jpg');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+    background-size: cover;
+   
+   
+}
+select {
+    font-family: 'StarWars', sans-serif !important;
+    color: rgb(0, 0, 0);
+    cursor: pointer;
+    border-radius: 5px;
+
+  }
+  
+.body{
+    font-family: 'StarWars', sans-serif !important;
+    max-width: 100vw;
+    height: 100vh;
+
+}
+
+.container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: url('~/assets/letras.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+    background-size: 50%;
+    opacity: 0;
+    transform: translateY(100%); 
+    transition: opacity 2s, transform 10s; 
+}
+.container.show {
+    opacity: 1;
+    transform: translateY(0); 
+}
+.musica{
+    justify-content: center;
+    display: flex;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    opacity: 1 !important;
+    color: yellow !important;
+    text-shadow: 3px 3px 3px rgb(105, 105, 19);
+    margin-bottom: 50px !important;
+    font-size: 40px;
+    border-radius: 10px;
+    margin-left: 4%;
+    margin-right: auto;
+    padding: 1%;
+}
+
+
+.scale{
+    list-style: none;
+    padding-left: 5%;
+}
+.scaleLi{
+    font-size: 20px;
+    text-transform: lowercase;
+    color: rgb(255, 255, 255);
+    background-color: #ffffff3a;
+    background: url('~/assets/fondoSelector2.jpg');
+    background-size: cover;
+    border-top: white 5px solid;
+    margin-bottom: 10px;
+    max-width: 80%;
+    margin-left: 10%;
+    margin-right: 10%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;    
+    transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+}
+.scaleLi:hover:not(.active){
+    color: yellow !important;
+    text-shadow: 3px 3px 3px rgb(105, 105, 19);
+    font-size: 30px;
+    transform: scale(1.3);
+    border-top: white 5px solid;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.scaleLi.active {
+    font-size: 30px;
+    color: rgb(255, 255, 255);
+    border-top: white 5px solid;
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    border-radius: 10px;
+    max-width: 80%;
+    margin-left: 10%;
+    margin-right: 10%;
+    padding: 10px;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+    text-align: left;
+}
+
+.scaleLi .nombrePersonaje{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 90%;
+    justify-content: space-between;
+}
+.scaleLi.active .nombrePersonaje{
+    color: yellow !important;
+    text-shadow: 3px 3px 3px rgb(105, 105, 19);
+    margin-bottom: 10px;
+    align-items: center;
+    text-align: center;
+    display: block;
+}
+.scaleLi .nombreNave{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 90%;
+    justify-content: space-between;
+}
+.scaleLi.active .nombreNave{
+    color: yellow !important;
+    text-shadow: 3px 3px 3px rgb(105, 105, 19);
+    margin-bottom: 10px;
+    align-items: center;
+    text-align: center;
+    display: block;
+    
+}
+.scaleLi .info {
+    justify-content: space-between;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    margin-right: 5%; 
+    padding: 2px;
+    margin-left: 5%;
+    font-size: 30px;
+}
+.scaleLi.active .info {
+    align-items: start;
+    display: flex;
+    flex-direction: column; 
+    max-width: 33%;
+    text-transform: lowercase;
+}
+
+.scaleLi .selector{
+    display: none;
+    }
+.scaleLi.active .selector{
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.scaleLi .ulInfo{
+    display: none; 
+    flex-wrap: wrap;
+    padding: 0; 
+    margin: 0;
+    text-transform: lowercase;
+}
+.scaleLi.active .ulInfo{
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 10px;
+    padding: 0; 
+    margin: 0;
+    align-items: center;
+    justify-content: center;
+    text-transform: lowercase;
+}
+.scaleLi.active .ulInfo .liInfo{
+    color: rgb(255, 255, 255);
+    font-size: 30px;
+    background: url('~/assets/fondoSelector.jpg');
+    background-position: center top;
+    background-repeat: no-repeat;
+    border-top: white 5px solid;
+    max-height: 120px;
+    width: auto;
+    padding: 10px;
+    display: flex;
+    gap: 10px;
+    flex: 1;
+    align-items: center;
+    flex-direction: row;
+    box-sizing: border-box;
+    text-transform: lowercase;
+}
+.imgPjNave{
+    max-height: 150px;
+    width: auto;
+}
+.scaleLi.active .personaje-container{
+    display: flex;
+    flex-direction: row; 
+    width: 100%;
+}
+
+.scaleLi .imgPerfil {
+    display: flex; 
+    height: 80px;
+    width: auto;
+    margin-right: 10%;
+    padding: 10px;
+    background-color: #5555557c;
+}
+.scaleLi.active .imgPerfil {
+    display: none; 
+}
+.scaleLi.active .ocultarPerfil{
+    display: none; 
+}
+
+
+.scaleLi img {
+    height: 200px;
+    width: auto;
+    margin-left: 15px; 
+    border-radius: 5px;
+    display: none; 
+}
+
+.scaleLi.active img {
+    margin-right: 0px;
+    display: block; 
+    height: 400px;
+    max-width: 50%;
+    
+}
+.scaleLi .img2 {
+    height: 200px;
+    width: auto;
+    margin-left: 15px; 
+    border-radius: 5px;
+    display: none; 
+}
+
+.scaleLi.active .img2 {
+    margin-right: 0px;
+    display: block;   
+    height: 400px;
+    max-width: 33%;
+    margin-top: 5%;
+    margin-bottom: 5%;
+    
+}
+
+.scaleLi.active .botonEliminarNave{
+    display: none;
+}
+.scaleLi.active .sii{
+    display: none;
+}
+.scaleLi.active .noo{
+    display: none;
+}
+.confirmacion {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 18px;
+  }
+  
+  .confirmacion .no {
+    margin: 10px;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: rgb(3, 184, 48);
+    border: 5px solid black;
+    border-radius: 10px;
+    transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+  }
+  .confirmacion .si {
+    margin: 10px;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: rgb(255, 25, 25);
+    border: 5px solid black;
+    border-radius: 10px;
+    transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .botonEliminarNave {
+    background-color: rgb(65, 0, 0);
+    color: white;
+    font-size: 20px;
+    padding: 10px;
+    cursor: pointer;
+    border: 5px solid red;
+    border-radius: 10px;
+    transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+  }
+  .botonEliminarNave:hover{
+    background-color: red;
+    border: 5px solid rgb(65, 0, 0);
+  }
+  
+  .si:hover{
+      transform: scale(1.2);
+      margin: 20px;
+   }
+   .no:hover{
+      transform: scale(1.2);
+      margin: 20px;
+  }
+
+ul {
+    padding-left: 2%;
+    padding-right: 2%;
+    list-style: none;
+    margin-top: 50px;
+    font-size: 20px;
+    text-transform: lowercase;
+}
+
+
+
+li {
+    color: rgb(255, 255, 255);
+    background-color: #ffffff3a;
+    border-top: white 5px solid;
+    max-width: 100%;
+    padding: 10px;
+    padding-left: 10%;
+    margin: 2%;
+    text-transform: lowercase;
+}
+li > ul {
+    display: flex; 
+    flex-wrap: wrap;
+    padding: 0; 
+    margin: 0;
+    text-transform: lowercase;
+}
+li > ul > li{
+    color: yellow;
+    background: url('~/assets/fondoSelector.jpg');
+    background-position: center right;
+    border-top: white 5px solid;
+    width: auto;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    align-items: center; 
+    box-sizing: border-box; 
+    text-transform: lowercase;
+}
+
+.naveSelected{
+    background: url('~/assets/fondoSelector.jpg');
+    background-size: cover;
+}
+.img{
+    height: 240px;
+    width: auto;
+}
+.img2{
+    height: 140px;
+    width: auto;
+}
+
+.paginacion {
+    max-width: 60%;
+    margin-left: 20%;
+    margin-right: 20%;
+    margin-bottom: 2%;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+.paginacion span {
+    opacity: 1 !important;
+    color: rgb(255, 255, 255);
+    padding: 10px;
+}
+
+.listados {
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.navesContainer {
+    flex: 1;
+   
+    margin-left: 20px;
+
+}
+.listaNv{
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    height: 75%;
+    padding: 4%;
+}
+
+.personajesContainer {
+    flex: 1;
+  
+
+}
+.listaPj{
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    height: 75%;
+    padding: 5%;
+
+}
+.menu{
+    justify-content: center;
+
+}
+
+.containerLimpiar{
+    margin-top: 10px;
+    padding-left: 35%;
+    padding-right: 35%;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    display: flex;
+    padding-bottom: 50px;
+    margin-bottom: 20px;
+    position: relative;
+
+}
+.buttonLimpiar {
+    font-family: 'StarWars', sans-serif !important;
+    font-size: 80px;
+    padding: 5px;
+    margin-top: 20px;
+    margin-left: 40%;
+    width: 300px;
+    height: 200px;
+    color: rgb(255, 255, 255);
+    background-color: rgb(206, 75, 75);
+    border-radius: 10px;
+    border: 5px solid rgb(110, 5, 5);
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+}
+.buttonLimpiar:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+.buttonLimpiar:hover{
+   border: 8px solid rgb(110, 5, 5);
+   font-size: 70px;
+
+ }
+
+
+
+.botonPasar{
+  font-family: 'StarWars', sans-serif !important;
+  font-size: 20px;
+  padding: 5px;
+  margin-left: 10px;
+  color: white;
+  background-color: rgb(43, 0, 255);
+  border: 5px solid rgb(28, 5, 110);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+
+}
+.botonPasar:hover{
+    color: yellow;
+    background-color: rgb(0, 0, 0);
+}
+
+.botonEliminar{
+  font-family: 'StarWars', sans-serif !important;
+  padding: 5px;
+  margin: 40px;
+  color: white;
+  background-color: rgb(191, 19, 19);
+  border-radius: 10px;
+  border:rgb(199, 127, 127) solid ;
+  cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+
+}
+.botonEliminar:hover{
+    transform: scale(1.3);
+    margin-left: 40px;
+ }
+
+.botonVincular{
+    font-family: 'StarWars', sans-serif !important;
+    padding: 5px;
+    margin: 40px;
+    color: white;
+    background-color: rgb(12, 125, 12);
+    border-radius: 10px;
+    border:rgb(91, 241, 91) solid ;
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+
+}
+.botonVincular:hover{
+    transform: scale(1.3);
+    margin-left: 40px;
+ }
+nav, RouterLink {
+    margin-left: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    box-shadow: none;
+    text-decoration: none;
+    font: inherit;
+    color: inherit;
+}
+
+
+nav{
+    margin-top: 50px;
+    align-items: center;  
+    justify-content: center;
+    text-align: center;
+    color: rgb(255, 255, 255);
+    margin-bottom: 10px;
+}
+.navIndex{
+    align-items: center;   
+    justify-content: space-between;
+    margin-top: 30px;
+
+    
+}
+.router{
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    font-size: 40px;
+    transition: transform 0.3s ease, font-size 0.3s ease, color 0.3s ease;
+}
+.router:hover{
+    color: yellow !important;
+    text-shadow: 3px 3px 3px rgb(105, 105, 19);
+    cursor: pointer;
+    border-radius: 20px;
+    padding-bottom: 6%;
+    padding-left: 8px;
+
+}
+.nave {
+    position: absolute;
+    width: 250px; 
+    
+}
+
+.nave-izquierda {
+    left: 0%;
+    top: 20%;
+    height: 290px;
+    width: 250;
+    transform: translate(-50%, -50%);
+    transform: rotate(90deg); 
+}
+
+.nave-derecha {
+    right: 0%;
+    top: 20%;
+    transform: translate(50%, -50%);
+    transform: rotate(180deg); 
+}
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: white;
+    font-size: 1.5rem;
+    z-index: 9999;
+}
+
+.lightsaber-container {
+    display: flex;
+    align-items: center;
+}
+.hilt {
+    width: 50px;
+    height: 20px;
+    background: black;
+    border: 2px solid #555;
+    border-radius: 5px;
+}
+
+.blade {
+    width: 0px;
+    height: 10px;
+    background: #00ff00; 
+    box-shadow: 0 0 10px #00ff00, 0 0 40px #00ff00; 
+    animation: extend-blade 18s ease-out forwards;
+}
+
+@keyframes extend-blade {
+    from {
+        width: 0px;
+    }
+    to {
+        width: 200px;
+    }
+}
+
+
+
+.containerTrailers{
+    display: flex;
+    padding: 5%;
+    justify-content: space-between;
+}
+
+.era1, .era2, .era3 {
+    display: flex;
+    flex-direction: column; 
+    margin: 2%;
+    padding-bottom: 5%;
+    text-align: center;
+}
+
+.era1 iframe,
+.era2 iframe,
+.era3 iframe {
+    margin-bottom: 20px; 
+}
+
+.containerTrailers iframe{
+    border-radius: 20px;
+    border: 5px solid rgb(255, 255, 255);
+ }
