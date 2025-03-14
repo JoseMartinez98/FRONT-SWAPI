@@ -9,6 +9,7 @@
   const buttonReduced = ref(false);
   const emit = defineEmits();
 
+  //The fuctions of this components are used to manage the audio at start from the web and the visibility property of container
   const reproducirAudio = () => {
   if (audioPlaying.value) {
     const audio = document.querySelector('audio');

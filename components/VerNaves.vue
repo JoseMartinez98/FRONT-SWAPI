@@ -14,6 +14,8 @@ const naveAEliminar = ref(null);
 const searchId = ref('');
 
 const fetchNaves = async (page = 1) => {
+//Function used to get de API laravel to get all ships with pagination
+
   try {
     const response = await fetch(`http://127.0.0.1:8000/api/naves?page=${page}`);
     if (!response.ok) throw new Error('Error al obtener los datos');
@@ -29,6 +31,8 @@ const fetchNaves = async (page = 1) => {
 }
 
 watch(searchId, async (newId) => {
+//Function that use the API function to watch a specific ship 
+
   if (!newId) {
     fetchNaves(); 
     return;
@@ -44,19 +48,10 @@ watch(searchId, async (newId) => {
     console.error('Error:', error);
     naves.value = [];
   }
-});
-
-const confirmarEliminacion = (naveId) => {
-  naveAEliminar.value = naveId;
-  confirmDelete.value = true;
-};
-
-const cancelarEliminacion = () => {
-  confirmDelete.value = false;
-  naveAEliminar.value = null;
-};
+})
 
 const eliminarNave = async () => {
+//Function that use the API function to delete a specific character 
   try {
     const response = await fetch(`http://127.0.0.1:8000/api/naves/${naveAEliminar.value}`, {
       method: 'DELETE',
@@ -70,6 +65,17 @@ const eliminarNave = async () => {
     console.error('Error:', error);
     alert('Hubo un error al intentar eliminar la nave');
   }
+}
+
+//The 2 follow function are used to confirm or cancel the option delete ship
+const confirmarEliminacion = (naveId) => {
+  naveAEliminar.value = naveId;
+  confirmDelete.value = true;
+};
+
+const cancelarEliminacion = () => {
+  confirmDelete.value = false;
+  naveAEliminar.value = null;
 };
 
 const fetchPersonajesDisponibles = async () => {
@@ -83,6 +89,7 @@ const fetchPersonajesDisponibles = async () => {
   }
 };
 
+//The 2 follow functions are used to delete or attach a character to a ship
 const eliminarPiloto = async (naveId) => {
   const pilotoId = deleteSelectedPilotos.value[naveId]
   if (!pilotoId) {
@@ -103,7 +110,6 @@ const eliminarPiloto = async (naveId) => {
     console.error('Error:', error)
   }
 }
-
 
 const vincularPiloto = async (naveId, pilotoId) => {
   if (!pilotoId) {
@@ -130,7 +136,7 @@ const vincularPiloto = async (naveId, pilotoId) => {
   }
 }
 
-
+//The 4 follow function are used to manage the pagination
 const nextPage = () => {
   if (currentPage.value < lastPage.value) {
     fetchNaves(currentPage.value + 1)
@@ -151,7 +157,7 @@ const lastPageFunc = () => {
 }
 
 
-
+//The function are used to convert the normal price to the price of Star Wras Web
 const convertToBase15 = (number) => {
   const simbolos = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'ß', 'Þ', '¢', 'μ', '¶'];
   if (number === 0) return '0';
@@ -164,11 +170,13 @@ const convertToBase15 = (number) => {
   return result;
 };
 
+//Function used to get de img from local folder
 const getImageUrl = (url) => {
   if (!url) return '/naves/default.png';
   return url.startsWith('http') ? url : `http://127.0.0.1:8000/${url}`;
 };
 
+//Function used to manage de property "activo" of ships 
 const toggleActive = (index) => {
   const nave = naves.value[index];
 

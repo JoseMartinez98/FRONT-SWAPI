@@ -1,6 +1,8 @@
 <script setup>
 import { ref } from 'vue'
 
+
+//All the functions of this component are used to manage the data form post from user
 const form = ref({
   name: '',
   gender: '',

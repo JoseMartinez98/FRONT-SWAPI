@@ -10,6 +10,7 @@ const naveAEliminar = ref(null)
 const searchId = ref('')
 
 const fetchPersonajes = async (page = 1) => {
+  //Function used to get de API laravel to get all characters with pagination
   try {
     const response = await fetch(`http://127.0.0.1:8000/api/personajes?page=${page}`)
     if (!response.ok) throw new Error('Error al obtener los datos')
@@ -26,6 +27,7 @@ const fetchPersonajes = async (page = 1) => {
 onMounted(() => fetchPersonajes())
 
 watch(searchId, async (newId) => {
+//Function that use the API function to watch a specific character 
   if (!newId) {
     fetchPersonajes(); 
     return;
@@ -46,6 +48,8 @@ watch(searchId, async (newId) => {
 
 
 const deletePersonaje = async (id) => {
+//Function that use the API function to delete a specific character 
+
   try {
     const response = await fetch(`http://127.0.0.1:8000/api/personajes/${id}`, {
       method: 'DELETE',
@@ -62,6 +66,7 @@ const deletePersonaje = async (id) => {
   }
 }
 
+//The 2 follow function are used to confirm or cancel the option delete character
 const confirmarEliminacion = (naveId) => {
   naveAEliminar.value = naveId;
 }
@@ -70,6 +75,7 @@ const cancelarEliminacion = () => {
   naveAEliminar.value = null;
 }
 
+//The 4 follow function are used to manage the pagination
 const nextPage = () => {
   if (currentPage.value < lastPage.value) {
     fetchPersonajes(currentPage.value + 1)
@@ -90,6 +96,7 @@ const lastPageFunc = () => {
   fetchPersonajes(lastPage.value);
 }
 
+//Function used to get de img from local folder
 const getImageUrl = (url) => {
   if (!url) {
     return '/personajes/default.png'; 
@@ -102,6 +109,7 @@ const getImageUrl = (url) => {
   return url; 
 }
 
+//Function used to manage de property "activo" of characters 
 const toggleActive = (index) => {
   const personaje = personajes.value[index];
 

@@ -5,6 +5,7 @@ import { ref } from 'vue';
 const loading = ref(false);
 const message = ref("");
 const confirmReset = ref(false);
+ //The functions of this component manage the confirm or cancel of "reset" and manage the reset of the data web to the default data database
 
 const confirmarReseteo = () => {
     confirmReset.value = true;
