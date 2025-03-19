@@ -1,12 +1,18 @@
 <script setup>
 import '~/assets/css/style.css';
 import Reproducir from '~/components/Reproducir.vue';
-import { ref, } from 'vue';
-
+import { ref } from 'vue';
 
 const containerVisible = ref(false);
-
-
+</script>
+<script>
+export default {
+  head() {
+    return {
+      title: 'SWAPI / inicio'
+    };
+  }
+};
 </script>
 
 <template>
@@ -26,8 +32,8 @@ const containerVisible = ref(false);
         <RouterLink class="router" to="/trailers">trailers -</RouterLink>
         <RouterLink class="router" to="/resetear"> resetear web</RouterLink>
         
-        <img src="~/assets/nave.png" alt="Nave Izquierda" class="nave nave-izquierda">
-        <img src="~/assets/nave2.png" alt="Nave Derecha" class="nave nave-derecha">
+        <img src="~/assets/img/nave.png" alt="Nave Izquierda" class="nave nave-izquierda">
+        <img src="~/assets/img/nave2.png" alt="Nave Derecha" class="nave nave-derecha">
     </nav>
   </div>
 </KeepAlive>

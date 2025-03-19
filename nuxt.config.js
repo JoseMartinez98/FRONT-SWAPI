@@ -3,7 +3,7 @@ const path = require('path');
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'F-StarWars',
+    title: 'SWAPI',
     htmlAttrs: {
       lang: 'en'
     },

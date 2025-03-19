@@ -118,7 +118,7 @@ const submitForm = async () => {
   border: 2px solid yellow;
   box-shadow: 0 0 20px yellow;
   text-align: left;
-  background: url('~/assets/fondoSelector.jpg');
+  background: url('~/assets/img/fondoSelector.jpg');
   background-size: cover;
   background-position: center center;
 }

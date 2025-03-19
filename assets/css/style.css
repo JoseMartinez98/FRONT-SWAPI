@@ -17,7 +17,7 @@ html, body {
     width: 100vw;
     display: block;
     font-family: 'StarWars', sans-serif !important;
-    background: url('~/assets/fondo.jpg');
+    background: url('~/assets/img/fondo.jpg');
     background-repeat: no-repeat;
     background-position: center center;
     background-attachment: fixed;
@@ -44,7 +44,7 @@ select {
     position: relative;
     width: 100vw;
     height: 100vh;
-    background: url('~/assets/letras.png');
+    background: url('~/assets/img/letras.png');
     background-repeat: no-repeat;
     background-position: center center;
     background-attachment: fixed;
@@ -89,7 +89,7 @@ h6 {
     text-transform: lowercase;
     color: rgb(255, 255, 255);
     background-color: #ffffff3a;
-    background: url('~/assets/fondoSelector2.jpg');
+    background: url('~/assets/img/fondoSelector2.jpg');
     background-size: cover;
     border-top: white 5px solid;
     margin-bottom: 10px;
@@ -186,6 +186,21 @@ h6 {
     margin-top: 10px;
     width: 100%;
 }
+.scaleLi label{
+    display: none;
+}
+.scaleLi.active label {
+    display: flex;
+}
+.scaleLi p{
+    display: none;
+    color: yellow !important;
+    text-shadow: 3px 3px 3px rgb(105, 105, 19);
+}
+.scaleLi.active p{
+    display: flex;
+
+}
 
 .scaleLi .ulInfo{
     display: none; 
@@ -207,7 +222,7 @@ h6 {
 .scaleLi.active .ulInfo .liInfo{
     color: rgb(255, 255, 255);
     font-size: 30px;
-    background: url('~/assets/fondoSelector.jpg');
+    background: url('~/assets/img/fondoSelector.jpg');
     background-position: center top;
     background-repeat: no-repeat;
     border-top: white 5px solid;
@@ -379,7 +394,7 @@ li > ul {
 }
 li > ul > li{
     color: yellow;
-    background: url('~/assets/fondoSelector.jpg');
+    background: url('~/assets/img/fondoSelector.jpg');
     background-position: center right;
     border-top: white 5px solid;
     width: auto;
@@ -393,7 +408,7 @@ li > ul > li{
 }
 
 .naveSelected{
-    background: url('~/assets/fondoSelector.jpg');
+    background: url('~/assets/img/fondoSelector.jpg');
     background-size: cover;
 }
 .img{

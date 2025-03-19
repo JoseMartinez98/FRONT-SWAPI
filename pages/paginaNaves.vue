@@ -1,6 +1,14 @@
 <script setup>
 import '~/assets/css/style.css';
-import ListaNaves from '~/components/ListaNaves.vue';
+</script>
+<script>
+export default {
+  head() {
+    return {
+      title: 'SWAPI / Naves'
+    };
+  }
+};
 </script>
 
 <template>

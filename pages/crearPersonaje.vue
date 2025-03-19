@@ -1,9 +1,17 @@
 <script setup>
     import '~/assets/css/style.css';
-import NewPj from '../components/NewPj.vue';
-
+    import NewPj from '../components/NewPj.vue';
+   
 </script>
-
+<script>
+export default {
+  head() {
+    return {
+      title: 'SWAPI / Crear Personaje'
+    };
+  }
+};
+</script>
 <template>
 <div class="listados">
     <div class="personajesContainer">

@@ -2,7 +2,15 @@
     import '~/assets/css/style.css';
 
 </script>
-
+<script>
+export default {
+  head() {
+    return {
+      title: 'SWAPI / Reset'
+    };
+  }
+};
+</script>
 <template>
 <div class="listados">
     <div class="personajesContainer">

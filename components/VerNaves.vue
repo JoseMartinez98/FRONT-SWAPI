@@ -11,7 +11,7 @@ const deleteSelectedPilotos = ref({});
 const activeIndex = ref(null);
 const confirmDelete = ref(false);
 const naveAEliminar = ref(null);
-const searchId = ref('');
+const searchName = ref('');
 
 const fetchNaves = async (page = 1) => {
 //Function used to get de API laravel to get all ships with pagination
@@ -30,25 +30,28 @@ const fetchNaves = async (page = 1) => {
   }
 }
 
-watch(searchId, async (newId) => {
-//Function that use the API function to watch a specific ship 
-
-  if (!newId) {
+watch(searchName, async (newName) => {
+  // Si el nombre está vacío, obtenemos todas las naves
+  if (!newName) {
     fetchNaves(); 
     return;
   }
 
   try {
-    const response = await fetch(`http://127.0.0.1:8000/api/naves/${newId}`);
+    const response = await fetch(`http://127.0.0.1:8000/api/naves?search=${newName}`);
     if (!response.ok) throw new Error('Nave no encontrada');
 
-    const nave = await response.json();
-    naves.value = [{ ...nave, activo: true }];
+    const data = await response.json();
+    naves.value = data.data.map(p => ({ ...p, activo: false }));
+    currentPage.value = data.current_page; 
+    lastPage.value = data.last_page;
+
   } catch (error) {
     console.error('Error:', error);
     naves.value = [];
   }
 })
+
 
 const eliminarNave = async () => {
 //Function that use the API function to delete a specific character 
@@ -105,7 +108,7 @@ const eliminarPiloto = async (naveId) => {
     if (nave) {
       nave.personajes = nave.personajes.filter(p => p.id_personajes !== pilotoId)
     }
-    deleteSelectedPilotos.value[naveId] = null
+    deleteSelectedPilotos.value[naveId] = ""
   } catch (error) {
     console.error('Error:', error)
   }
@@ -130,7 +133,7 @@ const vincularPiloto = async (naveId, pilotoId) => {
     if (nave && nuevoPiloto) {
       nave.personajes.push(nuevoPiloto)
     }
-    selectedPilotos.value[naveId] = null
+    selectedPilotos.value[naveId] = ""
   } catch (error) {
     console.error('Error:', error)
   }
@@ -202,7 +205,7 @@ onMounted(() => {
       <ul class="scale">
         <h1>lista de naves:</h1>
         <div class="busqueda">
-          <input v-model="searchId" type="text" placeholder="Buscar por id..." class="input-busqueda">
+          <input v-model="searchName" type="text" placeholder="Buscar nave..." class="input-busqueda">
         </div>
         <li class="scaleLi" v-for="(nave, index) in naves" 
             :key="nave.id_naves"
@@ -230,6 +233,7 @@ onMounted(() => {
           </div>
 
           <img class="img" :src="getImageUrl(nave.image_url)" alt="Imagen de la nave" />
+          <p style="color: yellow;">Seleccionador de pilotos</p>
           <ul class="ulInfo">
             <li class="LiInfo" v-for="personaje in nave.personajes" :key="personaje.id_personajes">
               {{ personaje.name }} <img class="imgPjNave" :src="personaje.image_url" alt="Imagen del personaje" />
@@ -237,7 +241,7 @@ onMounted(() => {
             <div class="selector">
               <div>
                 <select class="optionAñadir opciones" v-model="selectedPilotos[nave.id_naves]" @click.stop>
-                  <option class="opciones" :value="null" disabled>Selecciona un piloto</option>
+                  <option class="opciones" :value="''" disabled>Selecciona un piloto</option>
                   <option class="opciones" v-for="personaje in personajesDisponibles.filter(p => !nave.personajes.some(vinculado => vinculado.id_personajes === p.id_personajes))" :key="personaje.id_personajes" :value="personaje.id_personajes">
                     {{ personaje.name }}
                   </option>
@@ -246,7 +250,7 @@ onMounted(() => {
               </div>
               <div>
                 <select class="optionEliminar" v-model="deleteSelectedPilotos[nave.id_naves]" @click.stop>
-                  <option class="opciones" :value="null" disabled>Selecciona un piloto</option>
+                  <option class="opciones" :value="''" disabled>Selecciona un piloto</option>
                   <option class="opciones" v-for="personaje in nave.personajes" :key="personaje.id_personajes" :value="personaje.id_personajes">
                     {{ personaje.name }}
                   </option>

@@ -7,7 +7,7 @@ const currentPage = ref(1)
 const lastPage = ref(null)
 const activeIndex = ref(null);
 const naveAEliminar = ref(null)
-const searchId = ref('')
+const searchPersonaje = ref('');
 
 const fetchPersonajes = async (page = 1) => {
   //Function used to get de API laravel to get all characters with pagination
@@ -26,24 +26,28 @@ const fetchPersonajes = async (page = 1) => {
 
 onMounted(() => fetchPersonajes())
 
-watch(searchId, async (newId) => {
-//Function that use the API function to watch a specific character 
-  if (!newId) {
+watch(searchPersonaje, async (newName) => {
+  // Si el nombre está vacío, obtenemos todas las naves
+  if (!newName) {
     fetchPersonajes(); 
     return;
   }
 
   try {
-    const response = await fetch(`http://127.0.0.1:8000/api/personajes/${newId}`);
-    if (!response.ok) throw new Error('Personaje no encontrado');
+    const response = await fetch(`http://127.0.0.1:8000/api/personajes?search=${newName}`);
+    if (!response.ok) throw new Error('Nave no encontrada');
 
-    const personaje = await response.json();
-    personajes.value = [{ ...personaje, activo: true }]; 
+    const data = await response.json();
+    personajes.value = data.data.map(p => ({ ...p, activo: false }));
+    currentPage.value = data.current_page; 
+    lastPage.value = data.last_page;
+
   } catch (error) {
     console.error('Error:', error);
     personajes.value = [];
   }
-});
+})
+
 
 
 
@@ -131,7 +135,7 @@ const toggleActive = (index) => {
     <ul class="scale">
       <h1>Lista de personajes:</h1>
       <div class="busqueda">
-        <input v-model="searchId" type="text" placeholder="Buscar por id..." class="input-busqueda">
+        <input v-model="searchPersonaje" type="text" placeholder="Buscar personaje..." class="input-busqueda">
       </div>
       <li class="scaleLi" v-for="(personaje, index) in personajes" :key="personaje.id_personajes"
           :class="{ active: personaje.activo }" @click="toggleActive(index)">
@@ -187,8 +191,13 @@ const toggleActive = (index) => {
   font-size: 16px;
   border: 2px solid #ffffff;
   background-color: rgb(79, 78, 78);
-  color: white;
+  color: rgb(251, 255, 0) !important;
   border-radius: 5px;
+  outline: none;
+}
+.input-busqueda:focus{
+  outline: none;
+  border: 2px solid yellow;
 }
 
 .botonPasar:disabled {
@@ -196,14 +205,14 @@ const toggleActive = (index) => {
   opacity: 0.5;
 }
 .scaleLi {
-  background: url('~/assets/fondoSelector.jpg');
+  background: url('~/assets/img/fondoSelector.jpg');
   background-position: center bottom;
   background-repeat: no-repeat;
   background-size: cover;
 }
 
 .scaleLi.active {
-  background-image: url('~/assets/fondo3.jpg');
+  background-image: url('~/assets/img/fondo3.jpg');
 }
 
 .scaleLi.active .ulInfo {
@@ -211,7 +220,7 @@ const toggleActive = (index) => {
 }
 
 .scaleLi.active .ulInfo .LiInfo2 {
-  background: url('~/assets/fondoSelector2.jpg') !important;
+  background: url('~/assets/img/fondoSelector2.jpg') !important;
 }
 .sii {
   font-size: 15px;
