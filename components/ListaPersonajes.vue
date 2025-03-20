@@ -1,132 +1,74 @@
 <script setup>
 import '~/assets/css/style.css';
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch } from 'vue';
+import { fetchPersonajes, deletePersonaje } from '~/services/api.js';
 
-const personajes = ref([])
-const currentPage = ref(1)
-const lastPage = ref(null)
+const personajes = ref([]);
+const currentPage = ref(1);
+const lastPage = ref(null);
 const activeIndex = ref(null);
-const naveAEliminar = ref(null)
+const naveAEliminar = ref(null);
 const searchPersonaje = ref('');
 
-const fetchPersonajes = async (page = 1) => {
-  //Function used to get de API laravel to get all characters with pagination
-  try {
-    const response = await fetch(`http://127.0.0.1:8000/api/personajes?page=${page}`)
-    if (!response.ok) throw new Error('Error al obtener los datos')
+const loadPersonajes = async (page = 1, search = '') => {
+  const { personajes: data, currentPage: pageNum, lastPage: last } = await fetchPersonajes(page, search);
+  personajes.value = data;
+  currentPage.value = pageNum;
+  lastPage.value = last;
+};
 
-    const data = await response.json()
-    personajes.value = data.data.map(p => ({ ...p, activo: false }));
-    currentPage.value = data.current_page
-    lastPage.value = data.last_page
-  } catch (error) {
-    console.error('Error:', error)
-  }
-}
-
-onMounted(() => fetchPersonajes())
+onMounted(() => loadPersonajes());
 
 watch(searchPersonaje, async (newName) => {
-  // Si el nombre está vacío, obtenemos todas las naves
   if (!newName) {
-    fetchPersonajes(); 
-    return;
+    loadPersonajes();
+  } else {
+    loadPersonajes(1, newName);
   }
+});
 
-  try {
-    const response = await fetch(`http://127.0.0.1:8000/api/personajes?search=${newName}`);
-    if (!response.ok) throw new Error('Nave no encontrada');
-
-    const data = await response.json();
-    personajes.value = data.data.map(p => ({ ...p, activo: false }));
-    currentPage.value = data.current_page; 
-    lastPage.value = data.last_page;
-
-  } catch (error) {
-    console.error('Error:', error);
-    personajes.value = [];
-  }
-})
-
-
-
-
-const deletePersonaje = async (id) => {
-//Function that use the API function to delete a specific character 
-
-  try {
-    const response = await fetch(`http://127.0.0.1:8000/api/personajes/${id}`, {
-      method: 'DELETE',
-    });
-
-    if (!response.ok) throw new Error('Error al eliminar el personaje');
-
-    personajes.value = personajes.value.filter(p => p.id_personajes !== id);
-    naveAEliminar.value = null;
-    alert('Personaje eliminado exitosamente');
-  } catch (error) {
-    console.error('Error:', error);
-    alert('Hubo un error al intentar eliminar el personaje');
-  }
-}
-
-//The 2 follow function are used to confirm or cancel the option delete character
-const confirmarEliminacion = (naveId) => {
-  naveAEliminar.value = naveId;
-}
+const confirmarEliminacion = (id) => {
+  naveAEliminar.value = id;
+};
 
 const cancelarEliminacion = () => {
   naveAEliminar.value = null;
-}
+};
 
-//The 4 follow function are used to manage the pagination
-const nextPage = () => {
-  if (currentPage.value < lastPage.value) {
-    fetchPersonajes(currentPage.value + 1)
-  }
-}
-
-const prevPage = () => {
-  if (currentPage.value > 1) {
-    fetchPersonajes(currentPage.value - 1)
-  }
-}
-
-const firstPage = () => {
-  fetchPersonajes(1);
-}
-
-const lastPageFunc = () => {
-  fetchPersonajes(lastPage.value);
-}
-
-//Function used to get de img from local folder
-const getImageUrl = (url) => {
-  if (!url) {
-    return '/personajes/default.png'; 
-  }
-  
-  if (!url.startsWith('http')) {
-    const carpeta = url.includes('nave') ? 'naves' : 'personajes'; 
-    return `http://127.0.0.1:8000/${carpeta}/${url}`; 
-  }
-  return url; 
-}
-
-//Function used to manage de property "activo" of characters 
-const toggleActive = (index) => {
-  const personaje = personajes.value[index];
-
-  if (personaje.activo) {
-    personaje.activo = false;
-    activeIndex.value = null;
+const eliminarPersonaje = async (id) => {
+  const success = await deletePersonaje(id);
+  if (success) {
+    personajes.value = personajes.value.filter(p => p.id_personajes !== id);
+    naveAEliminar.value = null;
+    alert('Personaje eliminado exitosamente');
   } else {
-    personajes.value.forEach((n) => (n.activo = false));
-    personaje.activo = true;
-    activeIndex.value = index;
+    alert('Hubo un error al intentar eliminar el personaje');
   }
-}
+};
+
+// Paginación
+const nextPage = () => currentPage.value < lastPage.value && loadPersonajes(currentPage.value + 1);
+const prevPage = () => currentPage.value > 1 && loadPersonajes(currentPage.value - 1);
+const firstPage = () => loadPersonajes(1);
+const lastPageFunc = () => loadPersonajes(lastPage.value);
+
+// Obtener imagen
+const getImageUrl = (url) => {
+  if (!url) return '/personajes/default.png';
+  if (!url.startsWith('http')) {
+    const carpeta = url.includes('nave') ? 'naves' : 'personajes';
+    return `http://127.0.0.1:8000/${carpeta}/${url}`;
+  }
+  return url;
+};
+
+// Manejar activo
+const toggleActive = (index) => {
+  personajes.value.forEach((n, i) => (n.activo = i === index ? !n.activo : false));
+  activeIndex.value = personajes.value[index].activo ? index : null;
+};
 </script>
+
 
 <template>
 <div>
@@ -143,7 +85,7 @@ const toggleActive = (index) => {
           <div><img class="imgPerfil" :src="getImageUrl(personaje.image_url)" alt="Imagen del personaje"/></div>
           {{ personaje.name }}
           <div v-if="naveAEliminar === personaje.id_personajes">
-            <button class="sii" @click.stop="deletePersonaje(personaje.id_personajes)">Sí, eliminar</button>
+            <button class="sii" @click.stop="eliminarPersonaje(personaje.id_personajes)">Sí, eliminar</button>
             <button class="noo" @click.stop="cancelarEliminacion">Cancelar</button>
           </div>
           <button v-else class="botonEliminarNave" @click.stop="confirmarEliminacion(personaje.id_personajes)">Eliminar personaje</button>

@@ -1,6 +1,8 @@
 <script setup>
 import '~/assets/css/style.css';
 import { ref } from 'vue';
+import {  resetDatabase } from '~/services/api.js';
+
 
 const loading = ref(false);
 const message = ref("");
@@ -15,28 +17,10 @@ const cancelarReseteo = () => {
     confirmReset.value = false;
 };
 
-const resetDatabase = async () => {
-    loading.value = true;
-    message.value = "Importando...";
-    confirmReset.value = false;
-
-    try {
-        const response = await fetch('http://127.0.0.1:8000/api/importar-naves', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-
-        const data = await response.json();
-        message.value = data.message;
-    } catch (error) {
-        message.value = "Error al importar";
-    } finally {
-        loading.value = false;
-        window.location.replace("http://localhost:3000/");
-    }
+const resetDatabaseHandler = async () => {
+    await resetDatabase(loading, message, confirmReset);
 };
+
 </script>
 
 <template>
@@ -50,7 +34,7 @@ const resetDatabase = async () => {
 
         <div v-if="confirmReset" class="confirmacion">
             <p>¿Estás seguro de que quieres resetear la base de datos?</p>
-            <button class="si" @click="resetDatabase">Sí, resetear</button>
+            <button class="si" @click="resetDatabaseHandler">Sí, resetear</button>
             <button class="no" @click="cancelarReseteo">Cancelar</button>
         </div>
 

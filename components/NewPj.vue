@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import { submitForm } from '~/services/api.js';
 
 
 //All the functions of this component are used to manage the data form post from user
@@ -23,75 +24,48 @@ const handleFileUpload = (event) => {
     message.value = 'Solo se permiten imágenes en formato PNG';
   }
 };
-
-const submitForm = async () => {
-  const formData = new FormData();
-  formData.append('name', form.value.name);
-  formData.append('gender', form.value.gender);
-  formData.append('birth_year', form.value.birth_year);
-  formData.append('height', form.value.height);
-  formData.append('mass', form.value.mass);
-
-  if (form.value.image) {
-    formData.append('image', form.value.image);
-  } else {
-    message.value = 'Debe subir una imagen en formato PNG';
-    return;
-  }
-
-  try {
-    const response = await fetch('http://127.0.0.1:8000/api/personajes', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-      },
-      body: formData,
-    });
-
-    if (!response.ok) {
-      throw new Error('Error al enviar el formulario');
-    }
-
-    const data = await response.json();
-    message.value = 'Personaje creado exitosamente';
-    form.value = {
-      name: '',
-      gender: '',
-      birth_year: '',
-      height: '',
-      mass: '',
-      image: null
-    }
-    
-  } catch (error) {
-    console.error('Error:', error);
-    message.value = 'Hubo un error al crear el personaje';
+const handleHeightInput = (event) => {
+  const value = event.target.value;
+  if (value && !/^\d+(\.\d+)?$/.test(value)) { 
+    form.value.height = form.value.height.slice(0, -1);  
   }
 };
+const handleMassInput = (event) => {
+  const value = event.target.value;
+  if (value && !/^\d+(\.\d+)?$/.test(value)) {  
+    form.value.mass = form.value.mass.slice(0, -1);  
+  }
+};
+
+const submitFormHandler = async () => {
+  await submitForm(form, message);
+};
+
+    
 </script>
 
 <template>
   <div class="form">
-    <form @submit.prevent="submitForm">
+    <form @submit.prevent="submitFormHandler">
       <div class="celda">
         <label>Nombre:</label>
-        <input class="rellenar" v-model="form.name" type="text" />
+        <input class="rellenar" v-model="form.name" type="text" placeholder="Ejemplo: Jose" />
       </div>
       <div class="celda">
         <label>Género:</label>
-        <input class="rellenar" v-model="form.gender" type="text" />
+        <input class="rellenar" v-model="form.gender" type="text" placeholder="Ejemplo: male" />
       </div>
       <div class="celda">
         <label>Cumpleaños:</label>
-        <input class="rellenar" v-model="form.birth_year" type="text" />
+        <input class="rellenar" v-model="form.birth_year" type="date" />
       </div>
       <div class="celda">
         <label>Altura:</label>
-        <input class="rellenar" v-model="form.height" type="text" />
+        <input class="rellenar" v-model="form.height" type="text" @input="handleHeightInput" placeholder="Ejemplo: 175"  />
       </div>
       <div class="celda">
         <label>Peso:</label>
-        <input class="rellenar" v-model="form.mass" type="text" />
+        <input class="rellenar" v-model="form.mass" type="text" @input="handleMassInput" placeholder="Ejemplo: 70" />
       </div>
       <div class="celda">
         <label>Foto (PNG):</label>

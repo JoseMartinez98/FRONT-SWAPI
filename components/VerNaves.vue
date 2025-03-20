@@ -1,6 +1,7 @@
 <script setup>
 import '~/assets/css/style.css';
 import { ref, onMounted, watch } from 'vue';
+import { fetchNaves, eliminarNave, fetchPersonajesDisponibles, eliminarPiloto, vincularPiloto } from '~/services/api.js';
 
 const naves = ref([]);  
 const currentPage = ref(1); 
@@ -13,64 +14,17 @@ const confirmDelete = ref(false);
 const naveAEliminar = ref(null);
 const searchName = ref('');
 
-const fetchNaves = async (page = 1) => {
-//Function used to get de API laravel to get all ships with pagination
-
-  try {
-    const response = await fetch(`http://127.0.0.1:8000/api/naves?page=${page}`);
-    if (!response.ok) throw new Error('Error al obtener los datos');
-
-    const data = await response.json();
-    naves.value = data.data.map(p => ({ ...p, activo: false }));
-    currentPage.value = data.current_page; 
-    lastPage.value = data.last_page;
-
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
+const loadNaves = async (page = 1, search = '') => {
+  const data = await fetchNaves(page, search);
+  naves.value = data.data.map(p => ({ ...p, activo: false }));
+  currentPage.value = data.current_page;
+  lastPage.value = data.last_page;
+};
 
 watch(searchName, async (newName) => {
-  // Si el nombre está vacío, obtenemos todas las naves
-  if (!newName) {
-    fetchNaves(); 
-    return;
-  }
+  loadNaves(1, newName || '');
+});
 
-  try {
-    const response = await fetch(`http://127.0.0.1:8000/api/naves?search=${newName}`);
-    if (!response.ok) throw new Error('Nave no encontrada');
-
-    const data = await response.json();
-    naves.value = data.data.map(p => ({ ...p, activo: false }));
-    currentPage.value = data.current_page; 
-    lastPage.value = data.last_page;
-
-  } catch (error) {
-    console.error('Error:', error);
-    naves.value = [];
-  }
-})
-
-
-const eliminarNave = async () => {
-//Function that use the API function to delete a specific character 
-  try {
-    const response = await fetch(`http://127.0.0.1:8000/api/naves/${naveAEliminar.value}`, {
-      method: 'DELETE',
-    });
-    if (!response.ok) throw new Error('Error al eliminar la nave');
-    await fetchNaves(currentPage.value, naveAEliminar.value);
-    confirmDelete.value = false;
-    naveAEliminar.value = null;
-    alert('Nave eliminada exitosamente');
-  } catch (error) {
-    console.error('Error:', error);
-    alert('Hubo un error al intentar eliminar la nave');
-  }
-}
-
-//The 2 follow function are used to confirm or cancel the option delete ship
 const confirmarEliminacion = (naveId) => {
   naveAEliminar.value = naveId;
   confirmDelete.value = true;
@@ -81,86 +35,48 @@ const cancelarEliminacion = () => {
   naveAEliminar.value = null;
 };
 
-const fetchPersonajesDisponibles = async () => {
-  try {
-    const response = await fetch(`http://127.0.0.1:8000/api/allPersonajes`);
-    if (!response.ok) throw new Error('Error al obtener los personajes disponibles');
-    const data = await response.json();
-    personajesDisponibles.value = data;
-  } catch (error) {
-    console.error('Error:', error);
+const eliminarNaveHandler = async () => {
+  if (await eliminarNave(naveAEliminar.value)) {
+    loadNaves(currentPage.value);
+    confirmDelete.value = false;
+    naveAEliminar.value = null;
+    alert('Nave eliminada exitosamente');
+  } else {
+    alert('Hubo un error al intentar eliminar la nave');
   }
 };
 
-//The 2 follow functions are used to delete or attach a character to a ship
-const eliminarPiloto = async (naveId) => {
-  const pilotoId = deleteSelectedPilotos.value[naveId]
+const eliminarPilotoHandler = async (naveId) => {
+  const pilotoId = deleteSelectedPilotos.value[naveId];
   if (!pilotoId) {
-    alert('Por favor, selecciona un piloto para eliminar.')
-    return
+    alert('Por favor, selecciona un piloto para eliminar.');
+    return;
   }
-  try {
-    const response = await fetch(`http://127.0.0.1:8000/api/naves/${naveId}/piloto/${pilotoId}`, {
-      method: 'DELETE',
-    })
-    if (!response.ok) throw new Error('Error al eliminar piloto')
-    const nave = naves.value.find(n => n.id_naves === naveId)
-    if (nave) {
-      nave.personajes = nave.personajes.filter(p => p.id_personajes !== pilotoId)
-    }
-    deleteSelectedPilotos.value[naveId] = ""
-  } catch (error) {
-    console.error('Error:', error)
+  if (await eliminarPiloto(naveId, pilotoId)) {
+    const nave = naves.value.find(n => n.id_naves === naveId);
+    if (nave) nave.personajes = nave.personajes.filter(p => p.id_personajes !== pilotoId);
+    deleteSelectedPilotos.value[naveId] = "";
   }
-}
+};
 
-const vincularPiloto = async (naveId, pilotoId) => {
+const vincularPilotoHandler = async (naveId, pilotoId) => {
   if (!pilotoId) {
-    alert('Por favor, selecciona un piloto para vincular.')
-    return
+    alert('Por favor, selecciona un piloto para vincular.');
+    return;
   }
-  try {
-    const response = await fetch(`http://127.0.0.1:8000/api/naves/${naveId}/piloto/${pilotoId}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    })
-    if (!response.ok) throw new Error('Error al vincular piloto')
-    const nuevoPiloto = personajesDisponibles.value.find(p => p.id_personajes === pilotoId)
-    const nave = naves.value.find(n => n.id_naves === naveId)
-    if (nave && nuevoPiloto) {
-      nave.personajes.push(nuevoPiloto)
-    }
-    selectedPilotos.value[naveId] = ""
-  } catch (error) {
-    console.error('Error:', error)
+  if (await vincularPiloto(naveId, pilotoId)) {
+    const nuevoPiloto = personajesDisponibles.value.find(p => p.id_personajes === pilotoId);
+    const nave = naves.value.find(n => n.id_naves === naveId);
+    if (nave && nuevoPiloto) nave.personajes.push(nuevoPiloto);
+    selectedPilotos.value[naveId] = "";
   }
-}
+};
 
-//The 4 follow function are used to manage the pagination
-const nextPage = () => {
-  if (currentPage.value < lastPage.value) {
-    fetchNaves(currentPage.value + 1)
-  }
-}
+const nextPage = () => currentPage.value < lastPage.value && loadNaves(currentPage.value + 1);
+const prevPage = () => currentPage.value > 1 && loadNaves(currentPage.value - 1);
+const firstPage = () => loadNaves(1);
+const lastPageFunc = () => loadNaves(lastPage.value);
 
-const prevPage = () => {
-  if (currentPage.value > 1) {
-    fetchNaves(currentPage.value - 1)
-  }
-}
-const firstPage = () => {
-    fetchNaves(1)
-}
-
-const lastPageFunc = () => {
-    fetchNaves(lastPage.value)
-}
-
-
-//The function are used to convert the normal price to the price of Star Wras Web
 const convertToBase15 = (number) => {
   const simbolos = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'ß', 'Þ', '¢', 'μ', '¶'];
   if (number === 0) return '0';
@@ -173,31 +89,20 @@ const convertToBase15 = (number) => {
   return result;
 };
 
-//Function used to get de img from local folder
-const getImageUrl = (url) => {
-  if (!url) return '/naves/default.png';
-  return url.startsWith('http') ? url : `http://127.0.0.1:8000/${url}`;
-};
+const getImageUrl = (url) => url ? (url.startsWith('http') ? url : `http://127.0.0.1:8000/${url}`) : '/naves/default.png';
 
-//Function used to manage de property "activo" of ships 
 const toggleActive = (index) => {
   const nave = naves.value[index];
-
-  if (nave.activo) {
-    nave.activo = false;
-    activeIndex.value = null;
-  } else {
-    naves.value.forEach((n) => (n.activo = false));
-    nave.activo = true;
-    activeIndex.value = index;
-  }
-}
+  nave.activo = !nave.activo;
+  activeIndex.value = nave.activo ? index : null;
+};
 
 onMounted(() => {
-  fetchNaves();
-  fetchPersonajesDisponibles();
+  loadNaves();
+  fetchPersonajesDisponibles().then(data => personajesDisponibles.value = data);
 });
 </script>
+
 
 <template>
   <div>
@@ -220,7 +125,7 @@ onMounted(() => {
             <div class="ocultarPerfil"> {{ convertToBase15(nave.cost_in_credits) }}</div>
 
             <div v-if="naveAEliminar === nave.id_naves">
-              <button class="sii" @click.stop="eliminarNave">Sí, eliminar</button>
+              <button class="sii" @click.stop="eliminarNaveHandler">Sí, eliminar</button>
               <button class="noo" @click.stop="cancelarEliminacion">Cancelar</button>
             </div>
             <button v-else class="botonEliminarNave" @click.stop="confirmarEliminacion(nave.id_naves)">Eliminar Nave</button>
@@ -233,7 +138,7 @@ onMounted(() => {
           </div>
 
           <img class="img" :src="getImageUrl(nave.image_url)" alt="Imagen de la nave" />
-          <p style="color: yellow;">Seleccionador de pilotos</p>
+          <p style="color: yellow;">Seleccionar pilotos</p>
           <ul class="ulInfo">
             <li class="LiInfo" v-for="personaje in nave.personajes" :key="personaje.id_personajes">
               {{ personaje.name }} <img class="imgPjNave" :src="personaje.image_url" alt="Imagen del personaje" />
@@ -246,7 +151,7 @@ onMounted(() => {
                     {{ personaje.name }}
                   </option>
                 </select>
-                <button class="botonVincular" @click.stop="vincularPiloto(nave.id_naves, selectedPilotos[nave.id_naves])">vincular</button>
+                <button class="botonVincular" @click.stop="vincularPilotoHandler(nave.id_naves, selectedPilotos[nave.id_naves])">vincular</button>
               </div>
               <div>
                 <select class="optionEliminar" v-model="deleteSelectedPilotos[nave.id_naves]" @click.stop>
@@ -255,7 +160,7 @@ onMounted(() => {
                     {{ personaje.name }}
                   </option>
                 </select>
-                <button class="botonEliminar" @click.stop="eliminarPiloto(nave.id_naves)">eliminar</button>
+                <button class="botonEliminar" @click.stop="eliminarPilotoHandler(nave.id_naves)">eliminar</button>
               </div>
             </div>
           </ul>
