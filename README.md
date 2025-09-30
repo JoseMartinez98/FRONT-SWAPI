@@ -1,69 +1,131 @@
-# F-StarWars
+# FRONT-SWAPI
 
-## Build Setup
+Frontend en **Vue.js** para consumir los datos expuestos por el backend de SWAPI y mostrarlos de forma interactiva.
+
+![Vue](https://img.shields.io/badge/framework-Vue-green) ![Licencia MIT](https://img.shields.io/badge/license-MIT-green)
+
+---
+
+## 🔍 Índice
+
+1. [Descripción](#descripción)
+2. [Tecnologías usadas](#tecnologías-usadas)
+3. [Características principales](#características-principales)
+4. [Instalación](#instalación)
+5. [Configuración](#configuración)
+6. [Uso / Navegación](#uso--navegación)
+7. [Licencia](#licencia)
+8. [Contacto](#contacto)
+
+---
+
+## 📝 Descripción
+
+Este proyecto frontend en **Vue.js** consume la API proporcionada por **BACK-SWAPI** para mostrar datos de Star Wars (personajes, planetas, naves, etc.) de forma visual, con filtros, paginación y una interfaz amigable para el usuario.
+
+El frontend maneja estados de carga, errores y permite navegar fácilmente entre vistas.
+
+---
+
+## 🧰 Tecnologías usadas
+
+* Vue 3 con composición API
+* Vite (para desarrollo y build)
+* JavaScript (ES6+)
+* Axios para llamadas HTTP
+* Vue Router (navegación entre vistas)
+* (Opcional) Pinia o Vuex para estado global
+* TailwindCSS / Bootstrap / CSS nativo (ajustar según uso real)
+
+---
+
+## 🚀 Características principales
+
+* Listado de recursos: personajes, planetas, naves, etc.
+* Vistas de detalle para cada recurso.
+* Paginación de resultados.
+* Búsqueda y filtros.
+* Manejo de estados: loading, errores, sin resultados.
+* Navegación SPA con Vue Router.
+* Diseño responsivo para escritorio y móvil.
+
+---
+
+## 📥 Instalación
 
 ```bash
-# install dependencies
-$ npm install
+# Clona el repositorio
+git clone https://github.com/JoseMartinez98/FRONT-SWAPI.git
+cd FRONT-SWAPI
 
-# serve with hot reload at localhost:3000
-$ npm run dev
+# Instala dependencias
+npm install
+# o yarn install
 
-# build for production and launch server
-$ npm run build
-$ npm run start
-
-# generate static project
-$ npm run generate
+# Inicia el servidor de desarrollo
+npm run dev
 ```
 
-For detailed explanation on how things work, check out the [documentation](https://nuxtjs.org).
+---
 
-## Special Directories
+## ⚙️ Configuración
 
-You can create the following extra directories, some of which have special behaviors. Only `pages` is required; you can delete them if you don't want to use their functionality.
+Crea un archivo `.env` en la raíz con la URL del backend:
 
-### `assets`
+```dotenv
+VITE_API_BASE_URL=http://localhost:8000/api
+```
 
-The assets directory contains your uncompiled assets such as Stylus or Sass files, images, or fonts.
+En tu código puedes acceder con:
 
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/assets).
+```js
+import.meta.env.VITE_API_BASE_URL
+```
 
-### `components`
+---
 
-The components directory contains your Vue.js components. Components make up the different parts of your page and can be reused and imported into your pages, layouts and even other components.
+## 📡 Uso / Navegación
 
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/components).
+* **Inicio**: listado de personajes (o recurso principal).
+* **Filtros**: búsqueda por nombre o parámetros específicos.
+* **Detalles**: vista individual con atributos y relaciones.
+* **Navegación**: enlaces entre recursos relacionados.
+* **Paginación**: botones *Anterior* / *Siguiente* para cambiar de página.
 
-### `layouts`
+Ejemplo de llamada en Vue con Axios:
 
-Layouts are a great help when you want to change the look and feel of your Nuxt app, whether you want to include a sidebar or have distinct layouts for mobile and desktop.
+```js
+import axios from 'axios';
 
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/layouts).
+axios.get(`${import.meta.env.VITE_API_BASE_URL}/people/1`)
+  .then(res => console.log(res.data));
+```
+
+---
 
 
-### `pages`
+## 📄 Licencia
 
-This directory contains your application views and routes. Nuxt will read all the `*.vue` files inside this directory and setup Vue Router automatically.
+Este proyecto está bajo la licencia **MIT**.
+Consulta el archivo `LICENSE` para más detalles.
 
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/get-started/routing).
+---
 
-### `plugins`
+## 📬 Contacto
 
-The plugins directory contains JavaScript plugins that you want to run before instantiating the root Vue.js Application. This is the place to add Vue plugins and to inject functions or constants. Every time you need to use `Vue.use()`, you should create a file in `plugins/` and add its path to plugins in `nuxt.config.js`.
+* Autor: José Martínez
+* GitHub: [@JoseMartinez98](https://github.com/JoseMartinez98)
+* Email: [josesw98@.com](mailto:tuemail@ejemplo.com)
 
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/plugins).
 
-### `static`
+---
 
-This directory contains your static files. Each file inside this directory is mapped to `/`.
+## 🏷️ Estado del proyecto
 
-Example: `/static/robots.txt` is mapped as `/robots.txt`.
+Actualmente en desarrollo.
+Próximas mejoras planificadas:
 
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/static).
-
-### `store`
-
-This directory contains your Vuex store files. Creating a file in this directory automatically activates Vuex.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/store).
+* Mejoras en diseño y UX.
+* Animaciones con Vue transitions.
+* Soporte PWA / offline.
+* Pruebas end-to-end con Cypress.
