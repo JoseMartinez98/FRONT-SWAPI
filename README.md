@@ -115,7 +115,7 @@ Consulta el archivo `LICENSE` para más detalles.
 
 * Autor: José Martínez
 * GitHub: [@JoseMartinez98](https://github.com/JoseMartinez98)
-* Email: [josesw98@.com](mailto:tuemail@ejemplo.com)
+* Email: [josesw98@gmail.com](mailto:tuemail@ejemplo.com)
 
 
 ---
